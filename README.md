@@ -409,7 +409,8 @@ npm install --legacy-peer-deps
 
 ## 📄 License
 
-MIT License — Free to use and modify.
+This project is developed by Shubham as a personal/academic project.
+All rights reserved.
 
 ---
 
