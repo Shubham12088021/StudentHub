@@ -1,11 +1,23 @@
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { courseService } from '../../services/api';
 import { Award, Download, ArrowLeft } from 'lucide-react';
 
 export default function Certificate() {
-  const { courseId } = useParams();
+  const { courseId, id } = useParams();
+  const targetCourseId = courseId || (id?.includes('-') ? id.split('-')[1] : id);
   const { user } = useAuth();
+  const [course, setCourse] = useState(null);
   const date = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  useEffect(() => {
+    if (targetCourseId) {
+      courseService.getOne(targetCourseId)
+        .then((res) => setCourse(res.data.course))
+        .catch(() => {});
+    }
+  }, [targetCourseId]);
 
   const handlePrint = () => window.print();
 
@@ -55,7 +67,7 @@ export default function Certificate() {
           <p className="text-slate-500 mb-2">has successfully completed the course</p>
 
           <h2 className="text-xl font-bold text-slate-800 mb-6 max-w-lg">
-            Course Title Here
+            {course?.title || 'Course Completion'}
           </h2>
 
           <div className="flex items-center gap-8 text-sm text-slate-500">

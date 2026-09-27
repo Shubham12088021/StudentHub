@@ -1,8 +1,23 @@
+const mongoose = require('mongoose');
 const asyncHandler = require('express-async-handler');
 const Course = require('../models/Course');
 const Lecture = require('../models/Lecture');
 const User = require('../models/User');
 const { Notification } = require('../models/Wishlist');
+
+// Safe parsing helper for JSON arrays or comma-separated strings
+const parseArray = (val) => {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string') {
+    try {
+      const parsed = JSON.parse(val);
+      if (Array.isArray(parsed)) return parsed;
+    } catch {}
+    return val.split(',').map((s) => s.trim()).filter(Boolean);
+  }
+  return [];
+};
 
 // @desc    Get all published courses
 // @route   GET /api/courses
@@ -63,9 +78,10 @@ const getCourses = asyncHandler(async (req, res) => {
 // @route   GET /api/courses/:id
 // @access  Public
 const getCourse = asyncHandler(async (req, res) => {
-  const course = await Course.findOne({
-    $or: [{ _id: req.params.id }, { slug: req.params.id }],
-  })
+  const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
+  const course = await Course.findOne(
+    isObjectId ? { $or: [{ _id: req.params.id }, { slug: req.params.id }] } : { slug: req.params.id }
+  )
     .populate('instructor', 'name avatar bio headline website socialLinks enrolledCourses')
     .populate({
       path: 'sections.lectures',
@@ -100,10 +116,10 @@ const createCourse = asyncHandler(async (req, res) => {
     language,
     price,
     discountPrice,
-    requirements: requirements ? JSON.parse(requirements) : [],
-    whatYouLearn: whatYouLearn ? JSON.parse(whatYouLearn) : [],
-    targetAudience: targetAudience ? JSON.parse(targetAudience) : [],
-    tags: tags ? JSON.parse(tags) : [],
+    requirements: parseArray(requirements),
+    whatYouLearn: parseArray(whatYouLearn),
+    targetAudience: parseArray(targetAudience),
+    tags: parseArray(tags),
     instructor: req.user._id,
     thumbnail: req.file ? { public_id: req.file.public_id, url: req.file.path } : undefined,
   });

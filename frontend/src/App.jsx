@@ -27,6 +27,7 @@ import CourseLearning from './pages/student/CourseLearning';
 import StudentOrders from './pages/student/StudentOrders';
 import StudentWishlist from './pages/student/StudentWishlist';
 import StudentProfile from './pages/student/StudentProfile';
+import Certificate from './pages/student/Certificate';
 
 // Instructor Pages
 import InstructorDashboard from './pages/instructor/InstructorDashboard';
@@ -104,7 +105,9 @@ function App() {
                 <Route path="orders" element={<StudentOrders />} />
                 <Route path="wishlist" element={<StudentWishlist />} />
                 <Route path="profile" element={<StudentProfile />} />
+                <Route path="certificate/:courseId" element={<Certificate />} />
               </Route>
+              <Route path="/certificates/:id" element={<ProtectedRoute><Certificate /></ProtectedRoute>} />
 
               {/* Instructor Routes */}
               <Route path="/instructor" element={<ProtectedRoute roles={['instructor']}><DashboardLayout role="instructor" /></ProtectedRoute>}>

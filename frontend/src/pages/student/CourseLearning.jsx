@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { courseService, lectureService, progressService } from '../../services/api';
 import { CheckCircle, Circle, ChevronDown, ChevronUp, FileText, Play, Award } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -228,8 +228,16 @@ export default function CourseLearning() {
             <div className="progress-fill" style={{ width: `${pct}%` }} />
           </div>
           {progress?.isCompleted && (
-            <div className="mt-2 flex items-center gap-2 text-xs text-amber-600 font-semibold">
-              <Award size={14} /> Certificate earned!
+            <div className="mt-3 p-2.5 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-xs text-amber-700 dark:text-amber-300 font-semibold">
+                <Award size={16} /> Certificate ready!
+              </div>
+              <Link
+                to={`/student/certificate/${courseId}`}
+                className="text-xs bg-amber-500 hover:bg-amber-600 text-white font-medium px-2.5 py-1 rounded-lg transition-colors"
+              >
+                View
+              </Link>
             </div>
           )}
         </div>

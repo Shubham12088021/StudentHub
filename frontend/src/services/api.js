@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+const rawApiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const baseURL = rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl}/api`;
+
 const api = axios.create({
-  baseURL: `${process.env.REACT_APP_API_URL}/api`,
+  baseURL,
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
 });
@@ -108,4 +111,9 @@ export const adminService = {
 // Instructor services
 export const instructorService = {
   getDashboard: () => api.get('/instructor/dashboard'),
+};
+
+// Platform stats services
+export const statsService = {
+  getStats: () => api.get('/stats'),
 };

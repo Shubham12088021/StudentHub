@@ -120,7 +120,10 @@ const verifyPayment = asyncHandler(async (req, res) => {
   for (const item of order.courses) {
     const course = await Course.findById(item.course._id || item.course);
     if (course) {
-      if (!course.enrolledStudents.includes(req.user._id)) {
+      const isAlreadyEnrolled = course.enrolledStudents.some(
+        (s) => s.toString() === req.user._id.toString()
+      );
+      if (!isAlreadyEnrolled) {
         course.enrolledStudents.push(req.user._id);
         course.enrollmentCount += 1;
         await course.save();
@@ -201,7 +204,10 @@ const enrollFree = asyncHandler(async (req, res) => {
     throw new Error("This is not a free course");
   }
 
-  if (course.enrolledStudents.includes(req.user._id)) {
+  const isEnrolled = course.enrolledStudents.some(
+    (s) => s.toString() === req.user._id.toString()
+  );
+  if (isEnrolled) {
     res.status(400);
     throw new Error("Already enrolled in this course");
   }

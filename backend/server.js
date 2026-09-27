@@ -47,6 +47,10 @@ app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/instructor', require('./routes/instructorRoutes'));
 app.use('/api/payment', require('./routes/paymentRoutes'));
 
+// Public platform stats
+const { getPlatformStats } = require('./controllers/statsController');
+app.get('/api/stats', getPlatformStats);
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'StudentHub API is running' });
